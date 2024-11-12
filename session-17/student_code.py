@@ -1,32 +1,30 @@
-def validate(dict_1, dict_2):
-    def compare_nested_dict(template_dic, incoming_dict, path=''):
-        errors = []  # List to store paths to missing keys
-        
-        for key, value in template_dic.items():
-            current_path = f"{path}.{key}" if path else key  # Track the current path
-            
-            # Check if key is missing in the incoming dictionary
-            if key not in incoming_dict:
-                errors.append(current_path)  # Add missing key path to errors
-                continue
-            
-            # If value is a nested dictionary, recurse
-            if isinstance(value, dict):
-                errors.extend(compare_nested_dict(value, incoming_dict[key], current_path))
-        
-        return errors
+def validate(input_dict, template_dict, path=''):
+    # Helper function to format the error messages
+    def format_error(error_type, key_path):
+        return f"{error_type}: {key_path}"
 
-    # Run the comparison
-    missing_keys = compare_nested_dict(dict_2, dict_1)
+    for key, template_value in template_dict.items():
+        current_path = f'{path}.{key}' if path else key
 
-    # Prepare output based on the results
-    if missing_keys:
-        state = False
-        error = "mismatched keys: " + ", ".join(missing_keys)
-    else:
-        state = True
-        error = ''
-    
-    print (state, error)
+        # Check if the key is missing in input_dict
+        if key not in input_dict:
+            return False, format_error("mismatched keys", current_path)
 
-    return state, error
+        input_value = input_dict[key]
+
+        # Check for type mismatch
+        if isinstance(template_value, dict):
+            # Recursively validate nested dictionaries
+            is_valid, error_message = validate(input_value, template_value, current_path)
+            if not is_valid:
+                return is_valid, error_message
+        elif not isinstance(input_value, template_value):
+            return False, format_error("bad type", current_path)
+
+    # Check for extra keys in input_dict that aren't in template_dict
+    for key in input_dict:
+        current_path = f'{path}.{key}' if path else key
+        if key not in template_dict:
+            return False, format_error("mismatched keys", current_path)
+
+    return True, ''  # Return True if all checks pass
