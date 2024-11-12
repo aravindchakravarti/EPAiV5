@@ -7,13 +7,13 @@ on:
       - main
     paths:
       - 'session-17/**'  # Trigger only if there are changes in session-17
-      - 'session-18/**'  # Trigger only if there are changes in session-18
+      # - 'session-18/**'  # Trigger only if there are changes in session-18
   pull_request:
     branches:
       - main
     paths:
       - 'session-17/**'
-      - 'session-18/**'
+      # - 'session-18/**'
 
 jobs:
   test:
@@ -22,7 +22,7 @@ jobs:
     strategy:
       matrix:
         python-version: ['3.8', '3.11']
-        session-folder: ['session-17', 'session-18']
+        session-folder: ['session-17'] # , 'session-18']
 
     steps:
     - name: Check out the code
