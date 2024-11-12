@@ -1,0 +1,45 @@
+name: Python CI
+
+# Trigger the workflow on push or pull requests to specific session folders in the main branch
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'session-1/**'  # Trigger only if there are changes in session-1
+      - 'session-2/**'  # Trigger only if there are changes in session-2
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'session-1/**'
+      - 'session-2/**'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        python-version: ['3.8', '3.11']
+        session-folder: ['session-1', 'session-2']
+
+    steps:
+    - name: Check out the code
+      uses: actions/checkout@v3
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Run pytest on specific session folder
+      if: contains(matrix.session-folder, github.event.head_commit.message) || contains(matrix.session-folder, github.event.pull_request.title)
+      run: |
+        pytest ${{ matrix.session-folder }}/test_merge.py
+        pytest ${{ matrix.session-folder }}/test_validate.py
