@@ -6,14 +6,14 @@ on:
     branches:
       - main
     paths:
-      - 'session-17/**'  # Trigger only if there are changes in session-17
-      # - 'session-18/**'  # Trigger only if there are changes in session-18
+      - 'session-17/**'
+      - 'session-18/**'
   pull_request:
     branches:
       - main
     paths:
       - 'session-17/**'
-      # - 'session-18/**'
+      - 'session-18/**'
 
 jobs:
   test:
@@ -22,7 +22,7 @@ jobs:
     strategy:
       matrix:
         python-version: ['3.8', '3.11']
-        session-folder: ['session-17'] # , 'session-18']
+        session-folder: ['session-17', 'session-18']
 
     steps:
     - name: Check out the code
@@ -36,10 +36,16 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install -r requirements.txt
+        pip install -r ${{ matrix.session-folder }}/requirements.txt
 
-    - name: Run pytest on specific session folder
-      if: contains(matrix.session-folder, github.event.head_commit.message) || contains(matrix.session-folder, github.event.pull_request.title)
+    - name: Run tests for session-17
+      if: matrix.session-folder == 'session-17' && contains(github.event.head_commit.modified, 'session-17/') || contains(github.event.pull_request.title, 'session-17')
       run: |
-        pytest ${{ matrix.session-folder }}/test_merge.py
-        pytest ${{ matrix.session-folder }}/test_validate.py
+        cd session-17
+        pytest test_merge.py test_validate.py
+
+    - name: Run tests for session-18
+      if: matrix.session-folder == 'session-18' && contains(github.event.head_commit.modified, 'session-18/') || contains(github.event.pull_request.title, 'session-18')
+      run: |
+        cd session-18
+        pytest assignment_test.py
