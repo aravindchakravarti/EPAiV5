@@ -9,7 +9,7 @@ This project uses GitHub Actions for continuous integration, running tests on Py
 This project is open-sourced under the MIT License.
 
 
-# Dictionary Operations Library
+# Dictionary Operations Library:
 
 A Python library that provides robust dictionary validation and merging capabilities.
 
