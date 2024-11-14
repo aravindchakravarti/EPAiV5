@@ -4,7 +4,7 @@ This project uses GitHub Actions for continuous integration, running tests on Py
 
 ![Build Status](https://github.com/aravindchakravarti/EPAiV5-Session17/actions/workflows/python-app.yml/badge.svg)
 
-## License
+## License:
 
 This project is open-sourced under the MIT License.
 
