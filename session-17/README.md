@@ -37,6 +37,7 @@ pip install -r requirements.txt
 ### Dictionary Validation
 ```python
 from student_code import validate
+
 # Define a template
 template = {
   'user_id': int,
