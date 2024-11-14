@@ -45,6 +45,7 @@ template = {
     'last': str
     }
 }
+
 # Validate a dictionary
 input_dict = {
   'user_id': 100,
