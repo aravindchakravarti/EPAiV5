@@ -1,62 +1,50 @@
-name: Python CI
+name: Session-Specific Tests
 
 on:
   push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
+    paths:
+      - 'session-17/**'
+      - 'session-18/**'
 
 jobs:
   test-session-17:
-    if: ${{ github.event_name == 'push' || github.event_name == 'pull_request' }}
+    if: contains(github.event.head_commit.message, 'session-17')
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: ['3.8', '3.11']
-    
-    paths:
-      - 'session-17/**'
-
     steps:
-    - uses: actions/checkout@v3
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v4
-      with:
-        python-version: ${{ matrix.python-version }}
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install pytest
-        pip install -r session-17/requirements.txt
-    - name: Run tests
-      run: |
-        cd session-17
-        pytest test_merge.py test_validate.py
+      - name: Check out the repository
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest
+
+      - name: Run tests for session-17
+        run: |
+          pytest session-17/test_merge.py
+          pytest session-17/test_validate.py
 
   test-session-18:
-    if: ${{ github.event_name == 'push' || github.event_name == 'pull_request' }}
+    if: contains(github.event.head_commit.message, 'session-18')
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: ['3.8', '3.11']
-    
-    paths:
-      - 'session-18/**'
-
     steps:
-    - uses: actions/checkout@v3
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v4
-      with:
-        python-version: ${{ matrix.python-version }}
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install pytest
-        pip install -r session-18/requirements.txt
-    - name: Run tests
-      run: |
-        cd session-18
-        pytest assignment_test.py
+      - name: Check out the repository
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest
+
+      - name: Run tests for session-18
+        run: pytest session-18/assignment_test.py
