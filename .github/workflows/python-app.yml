@@ -8,8 +8,8 @@ on:
 
 jobs:
   test-session-17:
-    if: contains(github.event.head_commit.message, 'session-17')
     runs-on: ubuntu-latest
+    if: contains(github.event.commits.*.modified, 'session-17/') # Added 'if' condition for session-17.
     steps:
       - name: Check out the repository
         uses: actions/checkout@v2
@@ -30,8 +30,8 @@ jobs:
           pytest session-17/test_validate.py
 
   test-session-18:
-    if: contains(github.event.head_commit.message, 'session-18')
     runs-on: ubuntu-latest
+    if: contains(github.event.commits.*.modified, 'session-18')
     steps:
       - name: Check out the repository
         uses: actions/checkout@v2
